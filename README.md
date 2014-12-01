@@ -8,10 +8,22 @@ To run simulations based on historical and future data, use the **runSimulationF
 ```
 runSimulationFromFiles(historicalFileName,futureFileName,[verbose=False],[trials=10000])
 ```
-The *verbose* and *trials* parameters are optional and have sensible defaults (non-verbose, and 10000 trials).
+The **verbose** and **trials** parameters are optional and have sensible defaults (not verbose, and 10000 trials).
+
+Running this will yield something like this:
+```
+>>> MCSched.runSimulationFromFiles("historical.txt","future.txt")
+Running in quiet mode. For full output, supply verbose=True as a parameter. (Warning: it's noisy!)
+Running 10000 trials. Set parameter trials to customize, default is 10000
+Estimated: 48
+Min:38.40 (80.00% of estimated)
+Max:138.00 (287.50% of estimated)
+```
+It will also display a PyPlot graph like this one:
+![Graph of Hours Remaining and Confidence](http://ryanjsloan.com/ConfidenceGraph.png)
 
 #Input File Formats
-
+Todo.
 
 #Function Breakdown 
 
