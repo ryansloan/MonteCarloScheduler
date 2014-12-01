@@ -102,7 +102,7 @@ def runSample():
 	matplotlib.pyplot.ylabel("Confidence")
 	matplotlib.pyplot.show()
 
-def runModelFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
+def runSimulationFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
 	if (not verbose):
 		print("Running in quiet mode. For full output, supply verbose=True as a parameter. (Warning: it's noisy!)")
 	print("Running {0} trials. Set parameter trials to customize, default is 10000".format(trials))
