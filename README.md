@@ -10,7 +10,7 @@ runSimulationFromFiles(historicalFileName,futureFileName,[verbose=False],[trials
 ```
 The **verbose** and **trials** parameters are optional and have sensible defaults (not verbose, and 10000 trials).
 
-Running this will yield something like this:
+Running runSimulationFromFiles will yield something like this:
 ```
 >>> MCSched.runSimulationFromFiles("historical.txt","future.txt")
 Running in quiet mode. For full output, supply verbose=True as a parameter. (Warning: it's noisy!)
@@ -19,8 +19,9 @@ Estimated: 48
 Min:38.40 (80.00% of estimated)
 Max:138.00 (287.50% of estimated)
 ```
-It will also display a PyPlot graph like this one:
+It will also automatically display a PyPlot graph like this one:
 ![Graph of Hours Remaining and Confidence](http://ryanjsloan.com/ConfidenceGraph.png)
+*The vertical dotted line indicates the sum of the original estimated hours*
 
 #Input File Formats
 Todo.

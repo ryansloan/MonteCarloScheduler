@@ -14,7 +14,7 @@ def loadData(historicalFileName, futureFileName):
 	Input: historicalFileName, futureFileName
 	Output: historical, future
 	'''
-	historical  = [["T1",1,2],["T2",1,1.1],["T3",1,3],["T4",1,1.5],["T5",1,1],["T6",1,.8],["T7",1,2]]
+	historical  = [["T1",8,8],["T2",8,6],["T3",15,17],["T4",8,9],["T5",8,8],["T6",8,9],["T7",12,14]]
 	#historical  = [["T1",1,1],["T1",1,2]]
 	future 		= [["T8",8],["T9",16],["T10",4],["T11",8],["T12",12]]
 	return(historical, future)
