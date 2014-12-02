@@ -14,7 +14,7 @@ def loadData(historicalFileName, futureFileName):
 	Input: historicalFileName, futureFileName
 	Output: historical, future
 	'''
-	historical  = [["T1",8,8],["T2",8,6],["T3",15,17],["T4",8,9],["T5",8,8],["T6",8,9],["T7",12,14]]
+	historical  = [["T1",8,10],["T2",8,6],["T3",15,17],["T4",8,9],["T5",8,8],["T6",8,10],["T7",12,14]]
 	#historical  = [["T1",1,1],["T1",1,2]]
 	future 		= [["T8",8],["T9",16],["T10",4],["T11",8],["T12",12]]
 	return(historical, future)
@@ -120,4 +120,5 @@ def runSimulationFromFiles(historicalFileName,futureFileName,verbose=False,trial
 	matplotlib.pyplot.vlines(perfectEstimate,0,100,linestyles='dotted')
 	matplotlib.pyplot.xlabel("Hours")
 	matplotlib.pyplot.ylabel("Confidence")
+	matplotlib.pyplot.title('Hours to completion and confidence')
 	matplotlib.pyplot.show()
