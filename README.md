@@ -18,9 +18,10 @@ Use the **runModelFromData()** method as follos:
 runModelFromData(historicalData,FutureData[verbose=False,trials=10000,plot=True])
 ```
 Same optional parameters apply from above. Input data must be in format:
+```
 historical: [[name,est,actual],[name,est,actual],...]
 future: 	[[name,est],[name,est],...]
-
+```
 ##Output
 
 Running runModelFromFiles will yield something like this:
