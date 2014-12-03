@@ -1,22 +1,22 @@
 from random import *
 from matplotlib.pyplot import *
-'''
-Inputs:
-	Historical Data: CSV containing:
-		Task, Estimated, Actual
-	Future Data: CSV containing:
-		Task, Estimated
-	Start Date?
+import csv
 
-'''
 def loadData(historicalFileName, futureFileName):
 	'''
 	Input: historicalFileName, futureFileName
 	Output: historical, future
 	'''
-	historical  = [["T1",8,10],["T2",8,6],["T3",15,17],["T4",8,9],["T5",8,8],["T6",8,10],["T7",12,14]]
-	#historical  = [["T1",1,1],["T1",1,2]]
-	future 		= [["T8",8],["T9",16],["T10",4],["T11",8],["T12",12]]
+	historical 	= []
+	future 		= []
+	with open(historicalFileName,newline=None) as csvfile:
+	 	reader = csv.reader(csvfile)
+	 	for row in reader:
+	 		historical.append([row[0],int(row[1]),int(row[2])])
+	with open(futureFileName,newline=None) as csvfile:
+	 	reader = csv.reader(csvfile)
+	 	for row in reader:
+	 		future.append([row[0],int(row[1])])
 	return(historical, future)
 
 def runSimulations(historical,future,n=1,verbose=False):
@@ -87,20 +87,10 @@ def computeConfidence(data,verbose=False):
 		confidenceRatings.append([prediction[0],trialsSoFar/totalTrials*100])
 	return(confidenceRatings)
 
-def runSample():
-	matplotlib.pyplot.clf()
-	historical, future 	= loadData("","")
-	simulationData 		= runSimulations(historical, future,1000)
-	summaryData 		= summarize(simulationData)
-	confidenceData 		= computeConfidence(summaryData)
-	x = [item[0] for item in confidenceData]
-	y = [item[1] for item in confidenceData]
-	perfectEstimate = sum([item[1] for item in future])
-	matplotlib.pyplot.plot(x,y,'o')
-	matplotlib.pyplot.vlines(perfectEstimate,0,100,linestyles='dotted')
-	matplotlib.pyplot.xlabel("Hours")
-	matplotlib.pyplot.ylabel("Confidence")
-	matplotlib.pyplot.show()
+def runSampleModel():
+	print("Running for sample files.")
+	runSimulationFromFiles("testData_historical.csv","testData_future.csv")
+	
 
 def runSimulationFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
 	if (not verbose):
