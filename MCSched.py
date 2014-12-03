@@ -2,22 +2,44 @@ from random import *
 from matplotlib.pyplot import *
 import csv
 
-def loadData(historicalFileName, futureFileName):
+def loadData(historicalFilename, futureFilename,verbose=False):
 	'''
-	Input: historicalFileName, futureFileName
+	Input: historicalFilename, futureFilename
 	Output: historical, future
 	'''
 	historical 	= []
 	future 		= []
-	with open(historicalFileName,newline=None) as csvfile:
-	 	reader = csv.reader(csvfile)
-	 	for row in reader:
-	 		historical.append([row[0],int(row[1]),int(row[2])])
-	with open(futureFileName,newline=None) as csvfile:
-	 	reader = csv.reader(csvfile)
-	 	for row in reader:
-	 		future.append([row[0],int(row[1])])
+	hasHeaders=False
+	with open(historicalFilename) as csvfile:
+		sample = csvfile.read(1024)
+		hasHeaders = csv.Sniffer().has_header(sample)
+		dialect = csv.Sniffer().sniff(sample)
+		csvfile.seek(0)
+		reader = csv.reader(csvfile,dialect)
+		firstLine=True
+		for row in reader:
+			if (hasHeaders and firstLine):
+				firstLine=False
+			else:
+				historical.append([row[0],int(row[1]),int(row[2])])
+		if (verbose):
+			print("Loaded {0} historical entries.".format(len(historical)))
+	with open(futureFilename,newline=None) as csvfile:
+		sample = csvfile.read(1024)
+		hasHeaders = csv.Sniffer().has_header(sample)
+		dialect = csv.Sniffer().sniff(sample)
+		csvfile.seek(0)
+		reader = csv.reader(csvfile,dialect)
+		firstLine=True
+		for row in reader:
+			if (hasHeaders and firstLine):
+				firstLine=False
+			else:
+	 			future.append([row[0],int(row[1])])
+		if (verbose):
+	 		print("Loaded {0} future entries.".format(len(future)))
 	return(historical, future)
+
 
 def runSimulations(historical,future,n=1,verbose=False):
 	'''
@@ -30,10 +52,9 @@ def runSimulations(historical,future,n=1,verbose=False):
 	predictions=[]
 	for task in future:
 		estTotal+=task[1]
-	print("Estimated: "+str(estTotal))
+	print("Estimated Total: "+str(estTotal))
 	for i in range(0,n):
 		predictedTotal = runSimulation(historical,future)
-		#print ("Trial "+str(i)+" prediction: "+str(predictedTotal)+" ("+str(100*predictedTotal/estTotal)+"%)")
 		predictions.append(predictedTotal)
 		if (verbose):
 			print ("Trial {0:2} prediction: {1:.2f} ({2:.2f}% of estimated)".format(i,predictedTotal,100*predictedTotal/estTotal))
@@ -68,8 +89,6 @@ def summarize(data,verbose=False):
 	for p in points:
 		c = data.count(p)
 		output.append([p,c])
-		#if (verbose):
-			#print("Value: {0:.2f}, occurrences: {1}".format(p,c))
 	return(output)
 
 def computeConfidence(data,verbose=False):
@@ -83,31 +102,45 @@ def computeConfidence(data,verbose=False):
 	for prediction in data:
 		trialsSoFar+=prediction[1]
 		if (verbose):
-			print("Total: {0} (Confidence: {1:.2f}%)".format(prediction[0],trialsSoFar/totalTrials*100))
+			print("Prediction: {0} (Confidence: {1:.2f}%)".format(prediction[0],trialsSoFar/totalTrials*100))
 		confidenceRatings.append([prediction[0],trialsSoFar/totalTrials*100])
 	return(confidenceRatings)
 
 def runSampleModel():
 	print("Running for sample files.")
-	runSimulationFromFiles("testData_historical.csv","testData_future.csv")
+	return(runModelFromFiles("testData_historical.csv","testData_future.csv"))
 	
 
-def runSimulationFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
+def runModelFromFiles(historicalFilename,futureFilename,verbose=False,trials=10000,plot=True):
+	historical, future 	= loadData(historicalFilename,futureFilename,verbose)
+	return runModelFromData(historical,future,verbose,trials,plot)
+
+def runModelFromData(historical,future,verbose=False,trials=10000,plot=True):
+	'''
+	Input: Historical and Future data
+	Output: Predictions with confidence in the format: [[predicted, confidence percent], [predicted, confidence percent],...]
+			(List is sorted low to high based on predictions. Interpretation: "C% chance of completion by P")
+	'''
 	if (not verbose):
 		print("Running in quiet mode. For full output, supply verbose=True as a parameter. (Warning: it's noisy!)")
 	print("Running {0} trials. Set parameter trials to customize, default is 10000".format(trials))
 	if (trials<10000):
 		print("Tip: Fewer trials = faster runs, but less accuracy!")
 	matplotlib.pyplot.clf()
-	historical, future 	= loadData(historicalFileName,futureFileName)
 	simulationData 		= runSimulations(historical, future,trials,verbose)
 	summaryData 		= summarize(simulationData,verbose)
 	confidenceData 		= computeConfidence(summaryData,verbose)
+	perfectEstimate = sum([item[1] for item in future])
+	if (plot):
+		plotPredictions(confidenceData,perfectEstimate)
+	return(confidenceData,perfectEstimate)
+
+def plotPredictions(confidenceData,estimated=None):
 	x = [item[0] for item in confidenceData]
 	y = [item[1] for item in confidenceData]
-	perfectEstimate = sum([item[1] for item in future])
 	matplotlib.pyplot.plot(x,y,'o')
-	matplotlib.pyplot.vlines(perfectEstimate,0,100,linestyles='dotted')
+	if (estimated is not None):
+		matplotlib.pyplot.vlines(estimated,0,100,linestyles='dotted')
 	matplotlib.pyplot.xlabel("Hours")
 	matplotlib.pyplot.ylabel("Confidence")
 	matplotlib.pyplot.title('Hours to completion and confidence')
