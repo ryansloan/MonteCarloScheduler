@@ -13,7 +13,7 @@ results = runModelFromFiles(historicalFileName,futureFileName[,verbose=False,tri
 The **verbose**, **trials**, and **plot** parameters are optional and have sensible defaults (not verbose, and 10000 trials, True - draw plot).
 
 ##To supply your own data as lists:
-Use the **runModelFromData()** method as follos:
+Use the **runModelFromData()** method as follows:
 ```
 results = runModelFromData(historicalData,FutureData[verbose=False,trials=10000,plot=True])
 ```
@@ -49,6 +49,7 @@ CSV or TAB delimited should work, but I haven't tested extensively. Header row i
 The file for future work doesn't require the third column, obviously. For more info, check out sample files testData_historical.csv and testData_future.csv.
 
 #Function Breakdown 
+No promises this is up-to-date. Abandon all hope, ye who enter here.
 
 ##loadData(historicalFileName, futureFileName)
 	Loads historical and future data from a file.
