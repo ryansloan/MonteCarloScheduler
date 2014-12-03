@@ -24,14 +24,20 @@ It will also automatically display a PyPlot graph like this one:
 *The vertical dotted line indicates the sum of the original estimated hours*
 
 #Input File Formats
-Todo.
+Currently, only CSV is supported. It should be ordered: Task Name, Estimate, Actual:
+```
+"Task 1",8,10
+"Task 2",8,6
+"Task 3",15,17
+```
+The file for future work doesn't require the third column, obviously. For more info, check out sample files testData_historical.csv and testData_future.csv.
 
 #Function Breakdown 
 
 ##loadData(historicalFileName, futureFileName)
 	Loads historical and future data from a file.
-	Input:	historicalFileName	= filename containing historical task data
-			futureFileName		= filename containing future task data
+	Input:	historicalFileName	= filename of file containing historical task data
+			futureFileName		= filename of file containing future task data
 	Output: historical 			= list of historical data in the format: [[TaskName, estimated, actual], ...]
 			future 				= list of future data in the format: [[TaskName, estimated], ...]
 
@@ -60,7 +66,7 @@ Todo.
 	Output: Predictions with confidence percentages in format: [[prediction, percent], [prediction, percent]...]
 
 ## runSample():
-	Runs a sample data set.
+	Runs a simulation for the sample CSV files provided.
 
 ## runSimulationFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
 	Runs a simulation based on historical and future data sets.
