@@ -4,27 +4,40 @@ Monte Carlo Scheduler
 Project to use Monte Carlo Simulations from historical data to estimate project completion dates.
 
 #Usage
-To run simulations based on historical and future data, use the **runSimulationFromFiles()** method as follows:
+To run the model based on historical and future data, you have two options.
+##To load files containing historical or future data:
+Use the **runModelFromFiles()** method as follows:
 ```
-runSimulationFromFiles(historicalFileName,futureFileName,[verbose=False],[trials=10000])
+runModelFromFiles(historicalFileName,futureFileName[,verbose=False,trials=10000,plot=True])
 ```
-The **verbose** and **trials** parameters are optional and have sensible defaults (not verbose, and 10000 trials).
+The **verbose**, **trials**, and **plot** parameters are optional and have sensible defaults (not verbose, and 10000 trials, True - draw plot).
 
-Running runSimulationFromFiles will yield something like this:
+##To supply your own data as lists:
+Use the **runModelFromData()** method as follos:
 ```
->>> MCSched.runSimulationFromFiles("historical.txt","future.txt")
+runModelFromData(historicalData,FutureData[verbose=False,trials=10000,plot=True])
+```
+Same optional parameters apply from above. Input data must be in format:
+historical: [[name,est,actual],[name,est,actual],...]
+future: 	[[name,est],[name,est],...]
+
+##Output
+
+Running runModelFromFiles will yield something like this:
+```
+>>> MCSched.runModelFromFiles("historical.txt","future.txt")
 Running in quiet mode. For full output, supply verbose=True as a parameter. (Warning: it's noisy!)
 Running 10000 trials. Set parameter trials to customize, default is 10000
-Estimated: 48
+Estimated Total: 48
 Min:38.40 (80.00% of estimated)
 Max:138.00 (287.50% of estimated)
 ```
-It will also automatically display a PyPlot graph like this one:
+If plot=True, it will also display a PyPlot graph like this one:
 ![Graph of Hours Remaining and Confidence](http://ryanjsloan.com/ConfidenceGraph.png)
 *The vertical dotted line indicates the sum of the original estimated hours*
 
 #Input File Formats
-Currently, only CSV is supported. It should be ordered: Task Name, Estimate, Actual:
+CSV or TAB delimited should work, but I haven't tested extensively. Header row is optional.
 ```
 "Task 1",8,10
 "Task 2",8,6
@@ -68,5 +81,5 @@ The file for future work doesn't require the third column, obviously. For more i
 ## runSample():
 	Runs a simulation for the sample CSV files provided.
 
-## runSimulationFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
+## runModelFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
 	Runs a simulation based on historical and future data sets.
