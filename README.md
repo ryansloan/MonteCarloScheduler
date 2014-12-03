@@ -8,14 +8,14 @@ To run the model based on historical and future data, you have two options.
 ##To load files containing historical or future data:
 Use the **runModelFromFiles()** method as follows:
 ```
-runModelFromFiles(historicalFileName,futureFileName[,verbose=False,trials=10000,plot=True])
+results = runModelFromFiles(historicalFileName,futureFileName[,verbose=False,trials=10000,plot=True])
 ```
 The **verbose**, **trials**, and **plot** parameters are optional and have sensible defaults (not verbose, and 10000 trials, True - draw plot).
 
 ##To supply your own data as lists:
 Use the **runModelFromData()** method as follos:
 ```
-runModelFromData(historicalData,FutureData[verbose=False,trials=10000,plot=True])
+results = runModelFromData(historicalData,FutureData[verbose=False,trials=10000,plot=True])
 ```
 Same optional parameters apply from above. Input data must be in format:
 ```
@@ -36,6 +36,8 @@ Max:138.00 (287.50% of estimated)
 If plot=True, it will also display a PyPlot graph like this one:
 ![Graph of Hours Remaining and Confidence](http://ryanjsloan.com/ConfidenceGraph.png)
 *The vertical dotted line indicates the sum of the original estimated hours*
+
+If you don't assign the return value to a variable it will barf up the entire list of predictions.
 
 #Input File Formats
 CSV or TAB delimited should work, but I haven't tested extensively. Header row is optional.
@@ -79,8 +81,11 @@ The file for future work doesn't require the third column, obviously. For more i
 	Input: Prediction counts, a list of lists in format: [[prediction, count], [prediction,count]...]
 	Output: Predictions with confidence percentages in format: [[prediction, percent], [prediction, percent]...]
 
-## runSample():
-	Runs a simulation for the sample CSV files provided.
+## runSampleModel():
+	Runs a model for the sample CSV files provided.
 
-## runModelFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000):
-	Runs a simulation based on historical and future data sets.
+## runModelFromFiles(historicalFileName,futureFileName,verbose=False,trials=10000,plot=True):
+	Runs a model based on historical and future data read from files.
+
+## runModelFromData(historical,future,verbose=False,trials=10000,plot=True,plot=True):
+	Runs a model based on historical and future data provided as lists.
