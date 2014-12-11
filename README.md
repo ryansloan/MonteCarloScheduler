@@ -4,6 +4,7 @@ Monte Carlo Scheduler
 Project to use Monte Carlo Simulations from historical data to estimate project completion dates.
 
 #Usage
+**Python 3 is recommended!** There's some upredictable bugginess with Python 2.7 that I haven't had a chance to debug yet. Use at your own risk. (Though, I guess that also applies to Python3 :))
 To run the model based on historical and future data, you have two options.
 ##To load files containing historical or future data:
 Use the **runModelFromFiles()** method as follows:

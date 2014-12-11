@@ -24,7 +24,7 @@ def loadData(historicalFilename, futureFilename,verbose=False):
 				historical.append([row[0],int(row[1]),int(row[2])])
 		if (verbose):
 			print("Loaded {0} historical entries.".format(len(historical)))
-	with open(futureFilename,newline=None) as csvfile:
+	with open(futureFilename) as csvfile:
 		sample = csvfile.read(1024)
 		hasHeaders = csv.Sniffer().has_header(sample)
 		dialect = csv.Sniffer().sniff(sample)
@@ -98,12 +98,15 @@ def computeConfidence(data,verbose=False):
 	'''
 	trialsSoFar=0
 	totalTrials = sum([pred[1] for pred in data])
+	if (verbose):
+		print("Total trials: {0}".format(totalTrials))
 	confidenceRatings=[]
 	for prediction in data:
 		trialsSoFar+=prediction[1]
+		confidence = float(trialsSoFar)/float(totalTrials)*100 #float(trialsSoFar)/float(totalTrials)*100
 		if (verbose):
-			print("Prediction: {0} (Confidence: {1:.2f}%)".format(prediction[0],trialsSoFar/totalTrials*100))
-		confidenceRatings.append([prediction[0],trialsSoFar/totalTrials*100])
+			print("Prediction: {0} (Confidence: {1:.2f}%)".format(prediction[0],confidence))
+		confidenceRatings.append([prediction[0],confidence])
 	return(confidenceRatings)
 
 def runSampleModel():
@@ -135,13 +138,13 @@ def runModelFromData(historical,future,verbose=False,trials=10000,plot=True):
 		plotPredictions(confidenceData,perfectEstimate)
 	return(confidenceData,perfectEstimate)
 
-def plotPredictions(confidenceData,estimated=None):
+def plotPredictions(confidenceData,estimated=None,xLabel="Hours",yLabel="Confidence"):
 	x = [item[0] for item in confidenceData]
 	y = [item[1] for item in confidenceData]
 	matplotlib.pyplot.plot(x,y,'o')
 	if (estimated is not None):
 		matplotlib.pyplot.vlines(estimated,0,100,linestyles='dotted')
-	matplotlib.pyplot.xlabel("Hours")
-	matplotlib.pyplot.ylabel("Confidence")
-	matplotlib.pyplot.title('Hours to completion and confidence')
+	matplotlib.pyplot.xlabel(xLabel)
+	matplotlib.pyplot.ylabel(yLabel)
+	matplotlib.pyplot.title('{0} to completion and {1}'.format(xLabel,yLabel))
 	matplotlib.pyplot.show()
