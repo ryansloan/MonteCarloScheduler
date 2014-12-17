@@ -1,10 +1,12 @@
 from random import *
+import math
 from matplotlib.pyplot import *
 import csv
 
-def loadData(historicalFilename, futureFilename,verbose=False):
+def loadData(historicalFilename, futureFilename,verbose=False,historicalType="task"):
 	'''
 	Input: historicalFilename, futureFilename
+		Optional: Verbose, historicalType ("task" or "sprint")
 	Output: historical, future
 	'''
 	historical 	= []
@@ -21,7 +23,7 @@ def loadData(historicalFilename, futureFilename,verbose=False):
 			if (hasHeaders and firstLine):
 				firstLine=False
 			else:
-				historical.append([row[0],int(row[1]),int(row[2])])
+				historical.append(processHistRow(row,historicalType))
 		if (verbose):
 			print("Loaded {0} historical entries.".format(len(historical)))
 	with open(futureFilename) as csvfile:
@@ -40,6 +42,13 @@ def loadData(historicalFilename, futureFilename,verbose=False):
 	 		print("Loaded {0} future entries.".format(len(future)))
 	return(historical, future)
 
+
+def processHistRow(data,t):
+	if (t=="task"):
+		return([data[0],int(data[1]),int(data[2])])
+	if (t=="sprint"):
+		return([int(data[3]),int(data[4])]) #TODO: FIX TO IMPORT ALL INFO. Currently: [Completed, Added]
+	return([])
 
 def runSimulations(historical,future,n=1,verbose=False):
 	'''
@@ -74,6 +83,8 @@ def runSimulation(historical,future):
 		predicted = velocity*task[1]
 		predictedTotal+=predicted
 		task.append(predicted)
+	predictedTotal=round(predictedTotal,2)
+	#predictedTotal=math.ceil(predictedTotal/110) #TEST CODE FUZZY MATH LOL
 	return (predictedTotal)
 
 def summarize(data,verbose=False):
@@ -97,13 +108,13 @@ def computeConfidence(data,verbose=False):
 	Output: Predictions with confidence percentages in format: [[prediction, percent], [prediction, percent]...]
 	'''
 	trialsSoFar=0
-	totalTrials = sum([pred[1] for pred in data])
+	totalTrials = sum([predWithTrials[1] for predWithTrials in data])
 	if (verbose):
 		print("Total trials: {0}".format(totalTrials))
 	confidenceRatings=[]
 	for prediction in data:
 		trialsSoFar+=prediction[1]
-		confidence = float(trialsSoFar)/float(totalTrials)*100 #float(trialsSoFar)/float(totalTrials)*100
+		confidence = float(trialsSoFar)/float(totalTrials)*100
 		if (verbose):
 			print("Prediction: {0} (Confidence: {1:.2f}%)".format(prediction[0],confidence))
 		confidenceRatings.append([prediction[0],confidence])
@@ -138,13 +149,26 @@ def runModelFromData(historical,future,verbose=False,trials=10000,plot=True):
 		plotPredictions(confidenceData,perfectEstimate)
 	return(confidenceData,perfectEstimate)
 
-def plotPredictions(confidenceData,estimated=None,xLabel="Hours",yLabel="Confidence"):
+def plotPredictions(confidenceData,estimated=None,xLabel="Hours",yLabel="% of Simulations Complete",chartType="plot",chartMarker="or"):
 	x = [item[0] for item in confidenceData]
 	y = [item[1] for item in confidenceData]
-	matplotlib.pyplot.plot(x,y,'o')
+
+	matplotlib.pyplot.title('{0} and {1}'.format(xLabel,yLabel))
 	if (estimated is not None):
 		matplotlib.pyplot.vlines(estimated,0,100,linestyles='dotted')
+
+	if (len(y)<10):
+		lefts = [v-.5 for v in x]
+		matplotlib.pyplot.ylim(0,110)
+		matplotlib.pyplot.bar(lefts,y,width=((max(x)-min(x))/(len(x)-1)))
+		if (estimated is not None):
+			x.append(estimated)
+		matplotlib.pyplot.xticks(x)
+	else:
+		matplotlib.pyplot.ylim(-10,110)
+		matplotlib.pyplot.plot(x,y,chartMarker)
 	matplotlib.pyplot.xlabel(xLabel)
 	matplotlib.pyplot.ylabel(yLabel)
-	matplotlib.pyplot.title('{0} to completion and {1}'.format(xLabel,yLabel))
 	matplotlib.pyplot.show()
+
+	
