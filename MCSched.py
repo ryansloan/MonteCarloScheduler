@@ -122,7 +122,7 @@ def computeConfidence(data,verbose=False):
 
 def runSampleModel():
 	print("Running for sample files.")
-	return(runModelFromFiles("testData_historical.csv","testData_future.csv"))
+	return(runModelFromFiles("historical_tasks2.csv","randTasks_future.csv"))
 	
 
 def runModelFromFiles(historicalFilename,futureFilename,verbose=False,trials=10000,plot=True):
